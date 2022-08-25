@@ -12,7 +12,7 @@ const schedule = require('node-schedule');
   (async () => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.goto('https://www.maddyness.com/?s=MaddyMoney');
+    await page.goto('https://www.maddyness.com/hashtag/maddymoney/');
     await page.click('.typo-tribune');
 
     await page.goto(page.url());
@@ -20,37 +20,28 @@ const schedule = require('node-schedule');
     //ici, mettre directement le fichier que l'on veut scrapper 
     //await page.goto('');
 
-    const companiesHandles = await page.$$('.singleArticle__content > p');
+    const companiesHandles = await page.$$('.financements a');
 
     for (const companiehandle of companiesHandles) {
       let article = page.url();
       let title = "undefined";
-      let link = "undefined";
 
       try {
         title = await page.evaluate(
-          element => element.querySelector('a')?.text,
-          companiehandle
-        );
-      } catch (error) { }
-
-      try {
-        link = await page.evaluate(
-          element => element.querySelector('a')?.href,
+          element => element.querySelector('div.financements__name').textContent,
           companiehandle
         );
       } catch (error) { }
     if (title !== "undefined") {
       fs.appendFile(
         "result.csv",
-        `${article},${title},${link}\n`,
+        `${article},${title}\n`,
         function (err) {
           if (err) throw err;
         }
       );
     }
     }
-    await page.screenshot({ path: 'screenshot0.png' });
     
   await browser.close();
   })();
