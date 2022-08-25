@@ -17,6 +17,7 @@ const schedule = require('node-schedule');
 
     await page.goto(page.url());
     
+    //ici, mettre directement le fichier que l'on veut scrapper 
     //await page.goto('');
 
     const companiesHandles = await page.$$('.singleArticle__content > p');
@@ -39,7 +40,6 @@ const schedule = require('node-schedule');
           companiehandle
         );
       } catch (error) { }
-      console.log(title,link);
     if (title !== "undefined") {
       fs.appendFile(
         "result.csv",
